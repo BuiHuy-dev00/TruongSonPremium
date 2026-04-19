@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ProductImage } from "@/components/shop/product-image";
 import { ShopPurchaseModal } from "@/components/shop/shop-purchase-modal";
+import { HotProductsPanel } from "@/components/shop/hot-products-panel";
 import { ShopThemeToggle } from "@/components/shop/theme-toggle";
 import { useMemo, useState } from "react";
 import type { HomePayload } from "@/server/services/catalog.service";
@@ -85,73 +86,19 @@ export function HomeExperience({ initial }: { initial: HomePayload }) {
       <main className="mx-auto mb-24 max-w-7xl space-y-20 px-4 sm:px-6">
         {initial.hotProducts.length > 0 ? (
           <section className="pt-4">
-            <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <h2 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
-                  Sản phẩm Hot
-                </h2>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Được khách hàng quan tâm nhiều nhất
-                </p>
-              </div>
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
+                Sản phẩm Hot
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Được khách hàng quan tâm nhiều nhất — hiển thị 2 gói mỗi hàng, kéo
+                hoặc lăn chuột ngang để xem thêm.
+              </p>
             </div>
-            <div className="grid grid-cols-1 gap-5 md:grid-cols-4 md:gap-6">
-              {initial.hotProducts.slice(0, 3).map((p, idx) => (
-                <div
-                  key={p.id}
-                  className={
-                    idx === 0
-                      ? "group relative overflow-hidden rounded-[var(--radius-card)] border border-border bg-card p-8 shadow-[var(--shadow-card)] transition hover:shadow-[var(--shadow-card-hover)] md:col-span-2"
-                      : "group flex flex-col justify-between rounded-[var(--radius-card)] border border-border bg-card p-6 shadow-[var(--shadow-card)] transition hover:-translate-y-1 hover:shadow-[var(--shadow-card-hover)]"
-                  }
-                >
-                  {idx === 0 ? (
-                    <div
-                      aria-hidden
-                      className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_0%,rgba(79,70,229,0.12),transparent_55%)] opacity-90 dark:bg-[radial-gradient(circle_at_80%_0%,rgba(149,170,255,0.14),transparent_55%)]"
-                    />
-                  ) : null}
-                  <div className={idx === 0 ? "relative z-10" : ""}>
-                    <div className="flex flex-wrap items-center gap-2">
-                      {idx === 0 ? (
-                        <span className="rounded-full bg-gradient-to-r from-red-500/90 to-orange-500/90 px-3 py-0.5 text-[10px] font-black uppercase tracking-widest text-white shadow-sm">
-                          Bán chạy nhất
-                        </span>
-                      ) : null}
-                      {p.isFeatured ? (
-                        <span className="rounded-full border border-primary/30 bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-primary">
-                          Nổi bật
-                        </span>
-                      ) : null}
-                    </div>
-                    <h3
-                      className={
-                        idx === 0
-                          ? "mt-4 text-3xl font-black text-card-foreground"
-                          : "mt-3 text-lg font-bold text-card-foreground"
-                      }
-                    >
-                      {p.name}
-                    </h3>
-                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                      {p.shortDescription}
-                    </p>
-                  </div>
-                  <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-                    <span className="text-2xl font-black tabular-nums leading-tight text-accent md:text-3xl">
-                      {p.priceRangeLabel}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => setPurchaseProduct(p)}
-                      className="shrink-0 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-md transition hover:brightness-110 active:scale-[0.98] dark:shadow-lg dark:shadow-primary/20"
-                    >
-                      Mua ngay
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <HotProductsPanel
+              products={initial.hotProducts}
+              onBuy={setPurchaseProduct}
+            />
           </section>
         ) : null}
 

@@ -135,7 +135,7 @@ export function CategoriesAdminClient({ categories: initial }: ModalProps) {
   return (
     <>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <p className="text-sm text-slate-400">
+        <p className="text-sm text-muted-foreground">
           Thêm, sửa hoặc xóa danh mục hiển thị trên trang chủ.
         </p>
         <button
@@ -153,7 +153,7 @@ export function CategoriesAdminClient({ categories: initial }: ModalProps) {
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-left">
             <thead>
-              <tr className="bg-white/5 text-xs uppercase tracking-widest text-slate-400">
+              <tr className="bg-muted/60 text-xs uppercase tracking-widest text-muted-foreground">
                 <th className="px-6 py-4 font-semibold">Tên</th>
                 <th className="px-6 py-4 font-semibold">Slug</th>
                 <th className="px-6 py-4 font-semibold">Hiển thị</th>
@@ -164,26 +164,30 @@ export function CategoriesAdminClient({ categories: initial }: ModalProps) {
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-border">
               {categories.map((c) => (
-                <tr key={c.id} className="hover:bg-white/[0.02]">
-                  <td className="px-6 py-4 font-semibold text-white">{c.name}</td>
-                  <td className="px-6 py-4 text-sm text-slate-400">{c.slug}</td>
+                <tr key={c.id} className="hover:bg-muted/50">
+                  <td className="px-6 py-4 font-semibold text-foreground">
+                    {c.name}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-muted-foreground">
+                    {c.slug}
+                  </td>
                   <td className="px-6 py-4">
                     <span
                       className={
                         c.isVisible
-                          ? "text-xs font-bold text-[#00e3fd]"
-                          : "text-xs text-slate-500"
+                          ? "text-xs font-bold text-primary"
+                          : "text-xs text-muted-foreground"
                       }
                     >
                       {c.isVisible ? "Bật" : "Ẩn"}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-sm text-slate-300">
+                  <td className="px-6 py-4 text-sm text-foreground tabular-nums">
                     {c.sortOrder}
                   </td>
-                  <td className="px-6 py-4 text-sm text-slate-300">
+                  <td className="px-6 py-4 text-sm text-foreground tabular-nums">
                     {c._count.products}
                   </td>
                   <td className="px-6 py-4 text-right">
@@ -192,7 +196,7 @@ export function CategoriesAdminClient({ categories: initial }: ModalProps) {
                         type="button"
                         onClick={() => openEdit(c)}
                         disabled={loading}
-                        className="inline-flex items-center gap-1 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-slate-200 hover:bg-white/10 disabled:opacity-50"
+                        className="inline-flex items-center gap-1 rounded-lg border border-border bg-muted px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-muted/80 disabled:opacity-50"
                       >
                         <AdminIcon name="pencil" size={16} />
                         Sửa
@@ -201,7 +205,7 @@ export function CategoriesAdminClient({ categories: initial }: ModalProps) {
                         type="button"
                         onClick={() => onDelete(c)}
                         disabled={loading}
-                        className="inline-flex items-center gap-1 rounded-lg border border-red-500/20 bg-red-500/10 px-3 py-1.5 text-xs font-semibold text-red-300 hover:bg-red-500/20 disabled:opacity-50"
+                        className="inline-flex items-center gap-1 rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-100 disabled:opacity-50 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300 dark:hover:bg-red-500/20"
                       >
                         <AdminIcon name="trash" size={16} />
                         Xóa
@@ -216,53 +220,53 @@ export function CategoriesAdminClient({ categories: initial }: ModalProps) {
       </div>
 
       {open ? (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 [background:var(--overlay)] backdrop-blur-sm">
           <div
             className="absolute inset-0"
             aria-hidden
             onClick={() => !loading && closeModal()}
           />
-          <div className="relative w-full max-w-lg rounded-2xl border border-white/10 bg-[#151820] p-6 shadow-2xl">
-            <h3 className="text-lg font-bold text-white">
+          <div className="relative w-full max-w-lg rounded-2xl border border-border bg-card p-6 shadow-2xl">
+            <h3 className="text-lg font-bold text-foreground">
               {editing ? "Sửa danh mục" : "Thêm danh mục"}
             </h3>
             <form className="mt-5 space-y-4" onSubmit={onSubmit}>
               <div>
-                <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+                <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                   Tên *
                 </label>
                 <input
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none focus:border-[#95aaff]"
+                  className="w-full rounded-xl border border-border bg-muted px-4 py-3 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring"
                 />
               </div>
               <div>
-                <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+                <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                   Slug (tuỳ chọn)
                 </label>
                 <input
                   value={slug}
                   onChange={(e) => setSlug(e.target.value)}
                   placeholder="Để trống để tự tạo"
-                  className="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-600 focus:border-[#95aaff]"
+                  className="w-full rounded-xl border border-border bg-muted px-4 py-3 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-ring"
                 />
               </div>
               <div>
-                <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+                <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                   Mô tả
                 </label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={3}
-                  className="w-full resize-none rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none focus:border-[#95aaff]"
+                  className="w-full resize-none rounded-xl border border-border bg-muted px-4 py-3 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring"
                 />
               </div>
               <div className="flex gap-4">
                 <div className="flex-1">
-                  <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     Thứ tự
                   </label>
                   <input
@@ -272,22 +276,22 @@ export function CategoriesAdminClient({ categories: initial }: ModalProps) {
                     onChange={(e) =>
                       setSortOrder(Number.parseInt(e.target.value, 10) || 0)
                     }
-                    className="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none focus:border-[#95aaff]"
+                    className="w-full rounded-xl border border-border bg-muted px-4 py-3 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring"
                   />
                 </div>
-                <label className="flex flex-1 cursor-pointer items-center gap-3 rounded-xl border border-white/10 bg-black/40 px-4 py-3">
+                <label className="flex flex-1 cursor-pointer items-center gap-3 rounded-xl border border-border bg-muted px-4 py-3">
                   <input
                     type="checkbox"
                     checked={isVisible}
                     onChange={(e) => setIsVisible(e.target.checked)}
-                    className="h-4 w-4 accent-[#95aaff]"
+                    className="h-4 w-4 accent-primary"
                   />
-                  <span className="text-sm text-slate-300">Hiển thị</span>
+                  <span className="text-sm text-foreground">Hiển thị</span>
                 </label>
               </div>
 
               {error ? (
-                <p className="text-sm text-red-400" role="alert">
+                <p className="text-sm text-red-600 dark:text-red-400" role="alert">
                   {error}
                 </p>
               ) : null}
@@ -296,7 +300,7 @@ export function CategoriesAdminClient({ categories: initial }: ModalProps) {
                 <button
                   type="button"
                   onClick={() => !loading && closeModal()}
-                  className="rounded-xl border border-white/10 px-4 py-2 text-sm font-semibold text-slate-300 hover:bg-white/5"
+                  className="rounded-xl border border-border px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted"
                 >
                   Huỷ
                 </button>
