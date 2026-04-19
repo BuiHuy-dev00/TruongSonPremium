@@ -131,15 +131,13 @@ export function HomeExperience({ initial }: { initial: HomePayload }) {
             Hệ thống dịch vụ số hàng đầu
           </div>
           <h1 className="font-black leading-tight tracking-tighter [font-family:var(--font-be-vietnam),system-ui] text-4xl md:text-6xl">
-            Bảng giá dịch vụ{" "}
+            Nâng cấp trải nghiệm với{" "}
             <span className="bg-gradient-to-r from-[#95aaff] to-[#00e3fd] bg-clip-text text-transparent">
-              Mạng Xã Hội
+              tài khoản Premium
             </span>
+            .
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-base text-slate-400 md:text-lg">
-            Nâng cấp trải nghiệm với tài khoản Premium.
-          </p>
-          <p className="mx-auto mt-4 max-w-2xl text-sm text-slate-500 md:text-base">
+          <p className="mx-auto mt-6 max-w-2xl text-sm text-slate-500 md:text-base">
             Giải pháp tiết kiệm chi phí cho các dịch vụ Premium – kích hoạt nhanh,
             hỗ trợ 24/7.
           </p>
@@ -147,64 +145,66 @@ export function HomeExperience({ initial }: { initial: HomePayload }) {
       </header>
 
       <main className="mx-auto mb-24 max-w-7xl space-y-20 px-6">
-        <section>
-          <div className="mb-8 flex items-end justify-between gap-4">
-            <div>
-              <h2 className="text-2xl font-bold text-white">
-                🔥 Sản phẩm Hot nhất
-              </h2>
-              <p className="text-sm text-slate-500">
-                Được khách hàng quan tâm nhiều nhất
-              </p>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-            {initial.hotProducts.slice(0, 3).map((p, idx) => (
-              <div
-                key={p.id}
-                className={
-                  idx === 0
-                    ? "relative overflow-hidden rounded-[2.5rem] border border-white/5 bg-[#111318] p-8 md:col-span-2"
-                    : "flex flex-col justify-between rounded-[2.5rem] border border-white/5 bg-[#171a1f] p-6"
-                }
-              >
-                <div className={idx === 0 ? "relative z-10" : ""}>
-                  {idx === 0 ? (
-                    <span className="text-[10px] font-black uppercase tracking-widest text-[#95aaff]">
-                      Bán chạy nhất
-                    </span>
-                  ) : null}
-                  <h3
-                    className={
-                      idx === 0
-                        ? "mt-4 text-3xl font-black text-white"
-                        : "text-lg font-bold text-white"
-                    }
-                  >
-                    {p.name}
-                  </h3>
-                  <p className="mt-2 text-sm text-slate-400">{p.shortDescription}</p>
-                </div>
-                <div className="mt-6 flex items-center justify-between">
-                  <span className="text-2xl font-black text-[#00e3fd]">
-                    {p.priceFormatted}
-                    <span className="text-xs font-normal text-slate-500">
-                      {" "}
-                      {p.priceUnit}
-                    </span>
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setModalOpen(true)}
-                    className="rounded-xl bg-white px-6 py-2 text-sm font-bold text-black active:scale-95"
-                  >
-                    Mua ngay
-                  </button>
-                </div>
+        {initial.hotProducts.length > 0 ? (
+          <section>
+            <div className="mb-8 flex items-end justify-between gap-4">
+              <div>
+                <h2 className="text-2xl font-bold text-white">
+                  🔥 Sản phẩm Hot nhất
+                </h2>
+                <p className="text-sm text-slate-500">
+                  Được khách hàng quan tâm nhiều nhất
+                </p>
               </div>
-            ))}
-          </div>
-        </section>
+            </div>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+              {initial.hotProducts.slice(0, 3).map((p, idx) => (
+                <div
+                  key={p.id}
+                  className={
+                    idx === 0
+                      ? "relative overflow-hidden rounded-[2.5rem] border border-white/5 bg-[#111318] p-8 md:col-span-2"
+                      : "flex flex-col justify-between rounded-[2.5rem] border border-white/5 bg-[#171a1f] p-6"
+                  }
+                >
+                  <div className={idx === 0 ? "relative z-10" : ""}>
+                    {idx === 0 ? (
+                      <span className="text-[10px] font-black uppercase tracking-widest text-[#95aaff]">
+                        Bán chạy nhất
+                      </span>
+                    ) : null}
+                    <h3
+                      className={
+                        idx === 0
+                          ? "mt-4 text-3xl font-black text-white"
+                          : "text-lg font-bold text-white"
+                      }
+                    >
+                      {p.name}
+                    </h3>
+                    <p className="mt-2 text-sm text-slate-400">{p.shortDescription}</p>
+                  </div>
+                  <div className="mt-6 flex items-center justify-between">
+                    <span className="text-2xl font-black text-[#00e3fd]">
+                      {p.priceFormatted}
+                      <span className="text-xs font-normal text-slate-500">
+                        {" "}
+                        {p.priceUnit}
+                      </span>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setModalOpen(true)}
+                      className="rounded-xl bg-white px-6 py-2 text-sm font-bold text-black active:scale-95"
+                    >
+                      Mua ngay
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         <section id="services">
           <div className="mb-10 text-center">

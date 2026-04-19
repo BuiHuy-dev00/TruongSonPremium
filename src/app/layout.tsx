@@ -15,7 +15,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "TRUONGSON PREMIUM | Bảng giá dịch vụ số",
+    default: "TRUONGSON PREMIUM | Tài khoản Premium",
     template: "%s | TRUONGSON PREMIUM",
   },
   description:
