@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     template: "%s | TRUONGSON PREMIUM",
   },
   description:
-    "Bảng giá dịch vụ mạng xã hội & dịch vụ số — báo giá minh bạch, liên hệ trực tiếp.",
+    "Nâng cấp trải nghiệm với tài khoản Premium. Giải pháp tiết kiệm chi phí — kích hoạt nhanh, hỗ trợ 24/7.",
 };
 
 export default function RootLayout({

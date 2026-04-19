@@ -16,26 +16,6 @@ function mergeCatalog(rows: HomePayload["productsByCategory"]) {
   return [...map.values()];
 }
 
-function IconSearch({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      width={22}
-      height={22}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <circle cx="11" cy="11" r="8" />
-      <path d="m21 21-4.3-4.3" />
-    </svg>
-  );
-}
-
 function IconClose({ className }: { className?: string }) {
   return (
     <svg
@@ -117,11 +97,6 @@ function ContactChannelCard({
 export function HomeExperience({ initial }: { initial: HomePayload }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string>("all");
-  const [heroQuery, setHeroQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<PublicProduct[] | null>(
-    null
-  );
-  const [searching, setSearching] = useState(false);
 
   const merged = useMemo(
     () => mergeCatalog(initial.productsByCategory),
@@ -129,35 +104,9 @@ export function HomeExperience({ initial }: { initial: HomePayload }) {
   );
 
   const filtered = useMemo(() => {
-    if (searchResults) return searchResults;
     if (activeCategory === "all") return merged;
     return merged.filter((p) => p.category.slug === activeCategory);
-  }, [activeCategory, merged, searchResults]);
-
-  async function runSearch(e: React.FormEvent) {
-    e.preventDefault();
-    const q = heroQuery.trim();
-    if (!q) {
-      setSearchResults(null);
-      return;
-    }
-    setSearching(true);
-    try {
-      const params = new URLSearchParams({ q, limit: "48", page: "1" });
-      const res = await fetch(`/api/public/products?${params.toString()}`);
-      const json = (await res.json()) as {
-        success: boolean;
-        data?: { items: PublicProduct[] };
-      };
-      if (json.success && json.data?.items) {
-        setSearchResults(json.data.items);
-      } else {
-        setSearchResults([]);
-      }
-    } finally {
-      setSearching(false);
-    }
-  }
+  }, [activeCategory, merged]);
 
   const seller = initial.sellerContact;
 
@@ -188,31 +137,12 @@ export function HomeExperience({ initial }: { initial: HomePayload }) {
             </span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-base text-slate-400 md:text-lg">
-            Nâng tầm sự hiện diện trực tuyến của bạn với giải pháp Marketing &amp;
-            dịch vụ số — báo giá minh bạch, liên hệ trực tiếp để được hỗ trợ.
+            Nâng cấp trải nghiệm với tài khoản Premium.
           </p>
-
-          <form
-            className="mx-auto mt-10 max-w-3xl"
-            onSubmit={runSearch}
-          >
-            <div className="relative flex items-center rounded-full bg-[#1d2025] p-2 shadow-2xl ring-1 ring-white/5">
-              <IconSearch className="ml-4 shrink-0 text-slate-400" />
-              <input
-                value={heroQuery}
-                onChange={(e) => setHeroQuery(e.target.value)}
-                className="mx-3 flex-1 border-none bg-transparent py-3 text-sm text-[#f6f6fc] outline-none placeholder:text-slate-500"
-                placeholder="Bạn cần tăng follow, mua tài khoản hay tăng view?..."
-              />
-              <button
-                type="submit"
-                disabled={searching}
-                className="rounded-full bg-gradient-to-r from-[#95aaff] to-[#00e3fd] px-8 py-3 text-sm font-bold text-[#001a63] disabled:opacity-60"
-              >
-                {searching ? "Đang tìm..." : "Tìm ngay"}
-              </button>
-            </div>
-          </form>
+          <p className="mx-auto mt-4 max-w-2xl text-sm text-slate-500 md:text-base">
+            Giải pháp tiết kiệm chi phí cho các dịch vụ Premium – kích hoạt nhanh,
+            hỗ trợ 24/7.
+          </p>
         </div>
       </header>
 
@@ -286,10 +216,9 @@ export function HomeExperience({ initial }: { initial: HomePayload }) {
                 type="button"
                 onClick={() => {
                   setActiveCategory("all");
-                  setSearchResults(null);
                 }}
                 className={
-                  activeCategory === "all" && !searchResults
+                  activeCategory === "all"
                     ? "rounded-full bg-[#95aaff] px-6 py-2 text-sm font-bold text-[#001a63]"
                     : "rounded-full border border-white/5 bg-[#111318] px-6 py-2 text-sm text-slate-400 hover:text-white"
                 }
@@ -302,10 +231,9 @@ export function HomeExperience({ initial }: { initial: HomePayload }) {
                   type="button"
                   onClick={() => {
                     setActiveCategory(c.slug);
-                    setSearchResults(null);
                   }}
                   className={
-                    activeCategory === c.slug && !searchResults
+                    activeCategory === c.slug
                       ? "rounded-full bg-[#95aaff] px-6 py-2 text-sm font-bold text-[#001a63]"
                       : "rounded-full border border-white/5 bg-[#111318] px-6 py-2 text-sm text-slate-400 hover:text-white"
                   }
