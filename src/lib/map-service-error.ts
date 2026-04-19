@@ -20,6 +20,10 @@ export function mapServiceError(err: unknown): NextResponse | null {
       return fail(message, 409);
     case "BAD_CATEGORY":
       return fail(message, 400);
+    case "LAST_VARIANT":
+      return fail(message, 400);
+    case "BAD_INPUT":
+      return fail(message, 400);
     default:
       return null;
   }

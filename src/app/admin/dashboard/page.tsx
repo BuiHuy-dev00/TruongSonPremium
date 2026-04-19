@@ -57,7 +57,7 @@ export default async function AdminDashboardPage() {
             </p>
           </div>
 
-          <div className="overflow-hidden rounded-3xl border border-white/5 bg-[#111318] shadow-2xl">
+          <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-2xl">
             <div className="overflow-x-auto">
               <table className="w-full border-collapse text-left">
                 <thead>
@@ -92,7 +92,7 @@ export default async function AdminDashboardPage() {
                         className="group transition-colors hover:bg-white/[0.02]"
                       >
                         <td className="px-6 py-4">
-                          <div className="relative h-12 w-12 overflow-hidden rounded-lg bg-[#171a1f]">
+                          <div className="relative h-12 w-12 overflow-hidden rounded-lg bg-muted">
                             <ProductImage
                               variant="fill"
                               src={p.imageUrl}

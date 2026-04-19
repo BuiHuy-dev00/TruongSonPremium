@@ -33,23 +33,26 @@ model Category {
 }
 
 model Product {
-  id                String   @id @default(cuid())
+  id                String            @id @default(cuid())
   name              String
-  slug              String   @unique
+  slug              String            @unique
   sku               String?
   shortDescription  String
   detailDescription String?
+  /** Giá thấp nhất trong các biến thể — đồng bộ khi lưu biến thể (tương thích bộ lọc / dữ liệu cũ). */
   price             Int
+  /** Ghi chú đơn vị / hiển thị phụ — khi có nhiều biến thể có thể rỗng; ưu tiên hiển thị khoảng giá từ variants. */
   priceUnit         String
-  imageUrl          String   @db.Text
+  imageUrl          String            @db.Text
   categoryId        String
-  category          Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
-  isHot             Boolean  @default(false)
-  isFeatured        Boolean  @default(false)
-  isVisible         Boolean  @default(true)
-  sortOrder         Int      @default(0)
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  category          Category          @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  variants          ProductVariant[]
+  isHot             Boolean           @default(false)
+  isFeatured        Boolean           @default(false)
+  isVisible         Boolean           @default(true)
+  sortOrder         Int               @default(0)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
 
   @@index([categoryId])
   @@index([slug])
@@ -57,6 +60,25 @@ model Product {
   @@index([isHot])
   @@index([sortOrder])
   @@index([name])
+}
+
+/** Gói / biến thể giá của cùng một sản phẩm (vd: 1 tháng, 3 tháng). */
+model ProductVariant {
+  id             String   @id @default(cuid())
+  productId      String
+  product        Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  label          String
+  duration       Int?
+  durationUnit   String?
+  price          Int
+  originalPrice  Int?
+  note           String?
+  sortOrder      Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([productId])
+  @@index([productId, sortOrder])
 }
 
 model SellerContact {

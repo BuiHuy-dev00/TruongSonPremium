@@ -18,7 +18,10 @@ export async function GET(_request: Request, context: RouteContext) {
   const { id } = await context.params;
   const product = await prisma.product.findUnique({
     where: { id },
-    include: { category: true },
+    include: {
+      category: true,
+      variants: { orderBy: { sortOrder: "asc" } },
+    },
   });
   if (!product) {
     return fail("Không tìm thấy sản phẩm", 404);

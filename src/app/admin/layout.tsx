@@ -14,7 +14,7 @@ export default function AdminLayout({
 }>) {
   return (
     <SessionProviderWrapper>
-      <div className="min-h-screen bg-[#0c0e12] text-[#f6f6fc]">{children}</div>
+      <div className="min-h-screen bg-background text-foreground">{children}</div>
     </SessionProviderWrapper>
   );
 }

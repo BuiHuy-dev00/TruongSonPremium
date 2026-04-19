@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { ProductImage } from "@/components/shop/product-image";
+import { ShopPurchaseModal } from "@/components/shop/shop-purchase-modal";
+import { ShopThemeToggle } from "@/components/shop/theme-toggle";
 import { useMemo, useState } from "react";
 import type { HomePayload } from "@/server/services/catalog.service";
-import type { PublicProduct } from "@/server/mappers/product-public";
+import type { PublicProduct } from "@/types/product-public";
 
 function mergeCatalog(rows: HomePayload["productsByCategory"]) {
   const map = new Map<string, PublicProduct>();
@@ -16,86 +18,10 @@ function mergeCatalog(rows: HomePayload["productsByCategory"]) {
   return [...map.values()];
 }
 
-function IconClose({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      width={22}
-      height={22}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <path d="M18 6 6 18" />
-      <path d="m6 6 12 12" />
-    </svg>
-  );
-}
-
-/** Chỉ dùng thẻ <a> khi là URL http(s) — text tự do không bị ép thành href sai. */
-function isHttpUrl(s: string | null | undefined): boolean {
-  const t = s?.trim();
-  return !!t && /^https?:\/\//i.test(t);
-}
-
-function hasContactText(s: string | null | undefined): boolean {
-  return typeof s === "string" && s.trim().length > 0;
-}
-
-function ContactChannelCard({
-  href,
-  shellClass,
-  iconBgClass,
-  iconLetter,
-  title,
-  subtitle,
-}: {
-  href: string | null | undefined;
-  shellClass: string;
-  iconBgClass: string;
-  iconLetter: string;
-  title: string;
-  subtitle: string;
-}) {
-  const inner = (
-    <>
-      <div
-        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white ${iconBgClass}`}
-      >
-        {iconLetter}
-      </div>
-      <div className="min-w-0 flex-1 text-left">
-        <div className="font-bold">{title}</div>
-        <div className="break-all text-xs opacity-90">{subtitle}</div>
-      </div>
-    </>
-  );
-
-  const base =
-    `flex items-center gap-4 rounded-xl border p-4 ${shellClass}`.trim();
-
-  if (isHttpUrl(href)) {
-    return (
-      <a
-        href={href!.trim()}
-        target="_blank"
-        rel="noreferrer"
-        className={base}
-      >
-        {inner}
-      </a>
-    );
-  }
-
-  return <div className={`${base} cursor-default`}>{inner}</div>;
-}
-
 export function HomeExperience({ initial }: { initial: HomePayload }) {
-  const [modalOpen, setModalOpen] = useState(false);
+  const [purchaseProduct, setPurchaseProduct] = useState<PublicProduct | null>(
+    null
+  );
   const [activeCategory, setActiveCategory] = useState<string>("all");
 
   const merged = useMemo(
@@ -111,91 +37,114 @@ export function HomeExperience({ initial }: { initial: HomePayload }) {
   const seller = initial.sellerContact;
 
   return (
-    <div className="min-h-screen bg-[#0c0e12] text-[#f6f6fc]">
-      <nav className="sticky top-0 z-50 border-b border-white/5 bg-[#0c0e12]/80 backdrop-blur-2xl">
-        <div className="mx-auto flex max-w-[1920px] items-center px-6 py-4">
+    <div className="min-h-screen bg-background text-foreground">
+      <nav className="sticky top-0 z-50 border-b border-border shadow-[var(--shadow-nav)] [background:var(--nav-background)] backdrop-blur-xl">
+        <div className="mx-auto flex max-w-[1920px] items-center justify-between gap-4 px-4 py-3 sm:px-6">
           <Link
             href="/"
-            className="bg-gradient-to-r from-[#95aaff] to-[#00e3fd] bg-clip-text text-2xl font-black text-transparent"
+            className="bg-gradient-to-r from-[var(--gradient-text-from)] to-[var(--gradient-text-to)] bg-clip-text text-xl font-black text-transparent sm:text-2xl"
           >
             TRUONGSON PREMIUM
           </Link>
+          <ShopThemeToggle />
         </div>
       </nav>
 
-      <header className="relative overflow-hidden pt-16 pb-24">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,82,255,0.08)_0%,transparent_70%)]" />
-        <div className="relative z-10 mx-auto max-w-5xl px-6 text-center">
-          <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-[#95aaff]/20 bg-[#95aaff]/10 px-3 py-1 text-xs font-medium text-[#95aaff]">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-[#95aaff]" />
-            Hệ thống dịch vụ số hàng đầu
+      <header className="relative overflow-hidden border-b border-border/60 bg-gradient-to-b from-muted/80 to-background pt-14 pb-20 md:pt-20 md:pb-28">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-24 -top-24 h-96 w-96 rounded-full bg-primary/15 blur-3xl dark:bg-primary/20"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -left-32 top-40 h-80 w-80 rounded-full bg-accent/10 blur-3xl"
+        />
+        <div className="relative z-10 mx-auto max-w-5xl px-4 text-center sm:px-6">
+          <div className="mb-6 flex justify-center">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-[color-mix(in_oklab,var(--primary)_12%,transparent)] px-4 py-1.5 text-xs font-semibold text-primary dark:border-primary/30 dark:bg-primary/15">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-40" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
+              </span>
+              Hệ thống dịch vụ số hàng đầu
+            </div>
           </div>
-          <h1 className="font-black leading-tight tracking-tighter [font-family:var(--font-be-vietnam),system-ui] text-4xl md:text-6xl">
+          <h1 className="mx-auto max-w-4xl font-black leading-[1.1] tracking-tighter text-foreground [font-family:var(--font-be-vietnam),system-ui] text-[2rem] sm:text-5xl md:text-6xl">
             Nâng cấp trải nghiệm với{" "}
-            <span className="bg-gradient-to-r from-[#95aaff] to-[#00e3fd] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[var(--gradient-text-from)] to-[var(--gradient-text-to)] bg-clip-text text-transparent">
               tài khoản Premium
             </span>
-            .
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-sm text-slate-500 md:text-base">
-            Giải pháp tiết kiệm chi phí cho các dịch vụ Premium – kích hoạt nhanh,
-            hỗ trợ 24/7.
+          <p className="mx-auto mt-5 max-w-2xl text-base text-muted-foreground md:text-lg">
+            Giải pháp tiết kiệm chi phí cho các dịch vụ Premium — kích hoạt nhanh,
+            hỗ trợ 24/7. Chọn gói phù hợp, liên hệ và nhận tài khoản chính hãng.
           </p>
         </div>
       </header>
 
-      <main className="mx-auto mb-24 max-w-7xl space-y-20 px-6">
+      <main className="mx-auto mb-24 max-w-7xl space-y-20 px-4 sm:px-6">
         {initial.hotProducts.length > 0 ? (
-          <section>
-            <div className="mb-8 flex items-end justify-between gap-4">
+          <section className="pt-4">
+            <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <h2 className="text-2xl font-bold text-white">
-                  🔥 Sản phẩm Hot nhất
+                <h2 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
+                  Sản phẩm Hot
                 </h2>
-                <p className="text-sm text-slate-500">
+                <p className="mt-1 text-sm text-muted-foreground">
                   Được khách hàng quan tâm nhiều nhất
                 </p>
               </div>
             </div>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-4 md:gap-6">
               {initial.hotProducts.slice(0, 3).map((p, idx) => (
                 <div
                   key={p.id}
                   className={
                     idx === 0
-                      ? "relative overflow-hidden rounded-[2.5rem] border border-white/5 bg-[#111318] p-8 md:col-span-2"
-                      : "flex flex-col justify-between rounded-[2.5rem] border border-white/5 bg-[#171a1f] p-6"
+                      ? "group relative overflow-hidden rounded-[var(--radius-card)] border border-border bg-card p-8 shadow-[var(--shadow-card)] transition hover:shadow-[var(--shadow-card-hover)] md:col-span-2"
+                      : "group flex flex-col justify-between rounded-[var(--radius-card)] border border-border bg-card p-6 shadow-[var(--shadow-card)] transition hover:-translate-y-1 hover:shadow-[var(--shadow-card-hover)]"
                   }
                 >
+                  {idx === 0 ? (
+                    <div
+                      aria-hidden
+                      className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_0%,rgba(79,70,229,0.12),transparent_55%)] opacity-90 dark:bg-[radial-gradient(circle_at_80%_0%,rgba(149,170,255,0.14),transparent_55%)]"
+                    />
+                  ) : null}
                   <div className={idx === 0 ? "relative z-10" : ""}>
-                    {idx === 0 ? (
-                      <span className="text-[10px] font-black uppercase tracking-widest text-[#95aaff]">
-                        Bán chạy nhất
-                      </span>
-                    ) : null}
+                    <div className="flex flex-wrap items-center gap-2">
+                      {idx === 0 ? (
+                        <span className="rounded-full bg-gradient-to-r from-red-500/90 to-orange-500/90 px-3 py-0.5 text-[10px] font-black uppercase tracking-widest text-white shadow-sm">
+                          Bán chạy nhất
+                        </span>
+                      ) : null}
+                      {p.isFeatured ? (
+                        <span className="rounded-full border border-primary/30 bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-primary">
+                          Nổi bật
+                        </span>
+                      ) : null}
+                    </div>
                     <h3
                       className={
                         idx === 0
-                          ? "mt-4 text-3xl font-black text-white"
-                          : "text-lg font-bold text-white"
+                          ? "mt-4 text-3xl font-black text-card-foreground"
+                          : "mt-3 text-lg font-bold text-card-foreground"
                       }
                     >
                       {p.name}
                     </h3>
-                    <p className="mt-2 text-sm text-slate-400">{p.shortDescription}</p>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                      {p.shortDescription}
+                    </p>
                   </div>
-                  <div className="mt-6 flex items-center justify-between">
-                    <span className="text-2xl font-black text-[#00e3fd]">
-                      {p.priceFormatted}
-                      <span className="text-xs font-normal text-slate-500">
-                        {" "}
-                        {p.priceUnit}
-                      </span>
+                  <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                    <span className="text-2xl font-black tabular-nums leading-tight text-accent md:text-3xl">
+                      {p.priceRangeLabel}
                     </span>
                     <button
                       type="button"
-                      onClick={() => setModalOpen(true)}
-                      className="rounded-xl bg-white px-6 py-2 text-sm font-bold text-black active:scale-95"
+                      onClick={() => setPurchaseProduct(p)}
+                      className="shrink-0 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-md transition hover:brightness-110 active:scale-[0.98] dark:shadow-lg dark:shadow-primary/20"
                     >
                       Mua ngay
                     </button>
@@ -206,21 +155,23 @@ export function HomeExperience({ initial }: { initial: HomePayload }) {
           </section>
         ) : null}
 
-        <section id="services">
+        <section id="services" className="scroll-mt-24">
           <div className="mb-10 text-center">
-            <h2 className="mb-8 text-4xl font-black text-white [font-family:var(--font-be-vietnam),system-ui]">
-              Kho Dịch Vụ Tổng Hợp
+            <h2 className="mb-3 text-3xl font-black tracking-tight text-foreground [font-family:var(--font-be-vietnam),system-ui] md:text-4xl">
+              Kho dịch vụ tổng hợp
             </h2>
+            <p className="mx-auto mb-8 max-w-xl text-sm text-muted-foreground md:text-base">
+              Lọc theo danh mục — giá hiển thị là một gói hoặc khoảng giá khi có nhiều
+              gói.
+            </p>
             <div className="flex flex-wrap justify-center gap-2">
               <button
                 type="button"
-                onClick={() => {
-                  setActiveCategory("all");
-                }}
+                onClick={() => setActiveCategory("all")}
                 className={
                   activeCategory === "all"
-                    ? "rounded-full bg-[#95aaff] px-6 py-2 text-sm font-bold text-[#001a63]"
-                    : "rounded-full border border-white/5 bg-[#111318] px-6 py-2 text-sm text-slate-400 hover:text-white"
+                    ? "rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground shadow-md shadow-primary/25"
+                    : "rounded-full border border-border bg-card px-5 py-2.5 text-sm font-medium text-muted-foreground shadow-sm transition hover:border-primary/30 hover:text-foreground"
                 }
               >
                 Tất cả
@@ -229,13 +180,11 @@ export function HomeExperience({ initial }: { initial: HomePayload }) {
                 <button
                   key={c.id}
                   type="button"
-                  onClick={() => {
-                    setActiveCategory(c.slug);
-                  }}
+                  onClick={() => setActiveCategory(c.slug)}
                   className={
                     activeCategory === c.slug
-                      ? "rounded-full bg-[#95aaff] px-6 py-2 text-sm font-bold text-[#001a63]"
-                      : "rounded-full border border-white/5 bg-[#111318] px-6 py-2 text-sm text-slate-400 hover:text-white"
+                      ? "rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground shadow-md shadow-primary/25"
+                      : "rounded-full border border-border bg-card px-5 py-2.5 text-sm font-medium text-muted-foreground shadow-sm transition hover:border-primary/30 hover:text-foreground"
                   }
                 >
                   {c.name}
@@ -248,38 +197,51 @@ export function HomeExperience({ initial }: { initial: HomePayload }) {
             {filtered.map((p) => (
               <article
                 key={p.id}
-                className="group overflow-hidden rounded-[2rem] border border-white/12 bg-[#171a1f] shadow-[0_10px_48px_rgba(0,0,0,0.55)] ring-1 ring-white/[0.07] transition hover:border-[#95aaff]/45 hover:shadow-[0_16px_56px_rgba(149,170,255,0.14)] hover:ring-[#95aaff]/25"
+                className="group flex flex-col overflow-hidden rounded-[var(--radius-card)] border border-border bg-card text-card-foreground shadow-[var(--shadow-card)] ring-1 ring-black/[0.03] transition hover:-translate-y-1 hover:shadow-[var(--shadow-card-hover)] dark:ring-white/[0.06]"
               >
-                <div className="relative aspect-[4/3] overflow-hidden bg-[#141619]">
+                <div className="relative aspect-[4/3] shrink-0 overflow-hidden border-b border-border bg-muted">
                   <ProductImage
                     variant="fill"
                     src={p.imageUrl}
                     alt={p.name}
-                    className="transition duration-500 group-hover:scale-110"
+                    className="object-cover"
                     sizes="(max-width: 768px) 100vw, 25vw"
                   />
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#171a1f] via-[#171a1f]/55 to-transparent" />
+                  <div className="pointer-events-none absolute left-3 top-3 z-[1] flex flex-wrap gap-1.5 drop-shadow-sm">
+                    {p.isHot ? (
+                      <span className="rounded-full bg-gradient-to-r from-orange-500 to-rose-500 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wide text-white shadow">
+                        Hot
+                      </span>
+                    ) : null}
+                    {p.isFeatured ? (
+                      <span className="rounded-full border border-primary/40 bg-primary/15 px-2.5 py-0.5 text-[10px] font-bold text-primary">
+                        Phổ biến
+                      </span>
+                    ) : null}
+                  </div>
                 </div>
-                <div className="p-5">
-                  <h3 className="mb-2 font-bold transition group-hover:text-[#95aaff]">
+                <div className="flex flex-1 flex-col p-5">
+                  <h3 className="mb-2 line-clamp-2 font-bold leading-snug transition group-hover:text-primary">
                     {p.name}
                   </h3>
-                  <p className="mb-6 line-clamp-2 text-xs text-slate-500">
+                  <p className="mb-4 line-clamp-2 flex-1 text-xs leading-relaxed text-muted-foreground">
                     {p.shortDescription}
                   </p>
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0">
-                      <span className="text-xl font-black tabular-nums tracking-tight text-white md:text-2xl">
-                        {p.priceFormatted}
+                  <div className="flex flex-col gap-3 border-t border-border/80 pt-4 sm:flex-row sm:items-end sm:justify-between">
+                    <div className="min-w-0">
+                      <span className="block text-lg font-black tabular-nums tracking-tight text-accent md:text-xl">
+                        {p.priceRangeLabel}
                       </span>
-                      <span className="text-sm font-semibold leading-none text-slate-400 md:text-base">
-                        {p.priceUnit}
-                      </span>
+                      {p.hasMultiplePrices ? (
+                        <p className="mt-1 text-[10px] font-medium text-muted-foreground">
+                          Nhiều gói — bấm Mua để chọn
+                        </p>
+                      ) : null}
                     </div>
                     <button
                       type="button"
-                      onClick={() => setModalOpen(true)}
-                      className="rounded-xl bg-[#23262c] px-4 py-2 text-xs font-bold text-[#95aaff] transition hover:bg-[#95aaff] hover:text-[#001a63]"
+                      onClick={() => setPurchaseProduct(p)}
+                      className="shrink-0 rounded-xl border border-primary/30 bg-primary/10 px-4 py-2.5 text-xs font-bold text-primary transition hover:bg-primary hover:text-primary-foreground"
                     >
                       Mua
                     </button>
@@ -290,113 +252,29 @@ export function HomeExperience({ initial }: { initial: HomePayload }) {
           </div>
 
           {filtered.length === 0 ? (
-            <p className="mt-10 text-center text-sm text-slate-500">
+            <p className="mt-10 text-center text-sm text-muted-foreground">
               Không có sản phẩm phù hợp.
             </p>
           ) : null}
         </section>
       </main>
 
-      {modalOpen ? (
-        <div className="fixed inset-0 z-[100]">
-          <button
-            type="button"
-            aria-label="Đóng"
-            className="absolute inset-0 bg-black/80 backdrop-blur-md"
-            onClick={() => setModalOpen(false)}
-          />
-          <div className="absolute left-1/2 top-1/2 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-[2rem] border border-white/10 bg-[#1d2025] p-8 shadow-2xl">
-            <button
-              type="button"
-              className="absolute right-4 top-4 text-slate-500 hover:text-white"
-              onClick={() => setModalOpen(false)}
-              aria-label="Đóng"
-            >
-              <IconClose className="h-6 w-6" />
-            </button>
-            <h3 className="mb-2 text-center text-2xl font-black">
-              Kết nối chuyên viên
-            </h3>
-            <p className="mb-8 text-center text-sm text-slate-400">
-              Chọn kênh liên hệ để được hỗ trợ báo giá &amp; mua hàng nhanh nhất.
-            </p>
+      <ShopPurchaseModal
+        product={purchaseProduct}
+        seller={seller}
+        onClose={() => setPurchaseProduct(null)}
+      />
 
-            <div className="space-y-3">
-              {hasContactText(seller.telegramUrl) ||
-              hasContactText(seller.telegramHandle) ? (
-                <ContactChannelCard
-                  href={seller.telegramUrl}
-                  shellClass="border-[#0088cc]/20 bg-[#0088cc]/10 text-[#49b3ff] hover:bg-[#0088cc]/20"
-                  iconBgClass="bg-[#0088cc]"
-                  iconLetter="TG"
-                  title="Telegram"
-                  subtitle={
-                    seller.telegramHandle ??
-                    seller.telegramUrl ??
-                    ""
-                  }
-                />
-              ) : null}
-
-              {hasContactText(seller.zaloDisplay) ||
-              hasContactText(seller.zaloUrl) ? (
-                <ContactChannelCard
-                  href={seller.zaloUrl}
-                  shellClass="border-[#0068ff]/20 bg-[#0068ff]/10 text-[#7ab6ff] hover:bg-[#0068ff]/20"
-                  iconBgClass="bg-[#0068ff]"
-                  iconLetter="Z"
-                  title="Zalo"
-                  subtitle={
-                    seller.zaloDisplay ?? seller.zaloUrl ?? ""
-                  }
-                />
-              ) : null}
-
-              {hasContactText(seller.facebookUrl) ||
-              hasContactText(seller.facebookLabel) ? (
-                <ContactChannelCard
-                  href={seller.facebookUrl}
-                  shellClass="border-[#1877F2]/20 bg-[#1877F2]/10 text-[#8fb7ff] hover:bg-[#1877F2]/20"
-                  iconBgClass="bg-[#1877F2]"
-                  iconLetter="f"
-                  title="Facebook / Messenger"
-                  subtitle={
-                    seller.facebookLabel ?? seller.facebookUrl ?? ""
-                  }
-                />
-              ) : null}
-
-              {hasContactText(seller.phone) ? (
-                <div className="rounded-xl border border-white/10 bg-white/5 p-4 text-sm">
-                  <span className="text-slate-400">Điện thoại: </span>
-                  <span className="font-semibold text-white">
-                    {seller.phone?.trim()}
-                  </span>
-                </div>
-              ) : null}
-            </div>
-
-            {hasContactText(seller.note) ? (
-              <p className="mt-8 whitespace-pre-wrap text-center text-sm leading-relaxed text-slate-300">
-                {seller.note?.trim()}
-              </p>
-            ) : (
-              <p className="mt-8 text-center text-[10px] font-bold uppercase tracking-widest text-slate-500">
-                Hỗ trợ nhanh • Phản hồi trong giờ hành chính
-              </p>
-            )}
-          </div>
-        </div>
-      ) : null}
-
-      <footer className="border-t border-white/5 bg-[#111318] py-10">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 text-xs text-slate-500 md:flex-row">
-          <p>© 2026 TRUONGSON PREMIUM. Nền tảng dịch vụ số chuyên nghiệp.</p>
+      <footer className="border-t border-border [background:var(--footer-background)] py-10">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-4 text-xs text-muted-foreground sm:px-6 md:flex-row">
+          <p className="text-center md:text-left">
+            © 2026 TRUONGSON PREMIUM. Nền tảng dịch vụ số chuyên nghiệp.
+          </p>
           <div className="flex flex-wrap justify-center gap-6">
-            <span>Điều khoản</span>
-            <span>Bảo mật</span>
-            <span>Zalo</span>
-            <span>Telegram</span>
+            <span className="cursor-default hover:text-foreground">Điều khoản</span>
+            <span className="cursor-default hover:text-foreground">Bảo mật</span>
+            <span className="cursor-default hover:text-foreground">Zalo</span>
+            <span className="cursor-default hover:text-foreground">Telegram</span>
           </div>
         </div>
       </footer>

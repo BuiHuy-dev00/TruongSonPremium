@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Be_Vietnam_Pro, Inter } from "next/font/google";
+import { ThemeProvider } from "@/components/providers/theme-provider";
+import { getThemeBlockingScript } from "@/lib/theme-storage";
 import "./globals.css";
 
 const beVietnam = Be_Vietnam_Pro({
@@ -28,9 +30,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi" className={`dark ${beVietnam.variable} ${inter.variable}`}>
-      <body className="min-h-screen bg-[#0c0e12] text-[#f6f6fc] antialiased [font-family:var(--font-inter),system-ui]">
-        {children}
+    <html
+      lang="vi"
+      suppressHydrationWarning
+      className={`${beVietnam.variable} ${inter.variable}`}
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: getThemeBlockingScript() }} />
+      </head>
+      <body className="min-h-screen bg-background text-foreground antialiased transition-colors duration-300 [font-family:var(--font-inter),system-ui]">
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );

@@ -10,7 +10,9 @@ export type AdminIconGlyph =
   | "visibility"
   | "pencil"
   | "trash"
-  | "plus";
+  | "plus"
+  | "copy"
+  | "more_vert";
 
 const base = "inline-block shrink-0";
 
@@ -104,6 +106,21 @@ export function AdminIcon({
       return (
         <svg {...p}>
           <path d="M12 5v14M5 12h14" />
+        </svg>
+      );
+    case "copy":
+      return (
+        <svg {...p}>
+          <rect x="9" y="9" width="13" height="13" rx="2" />
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+        </svg>
+      );
+    case "more_vert":
+      return (
+        <svg {...p}>
+          <circle cx="12" cy="6" r="1.25" fill="currentColor" stroke="none" />
+          <circle cx="12" cy="12" r="1.25" fill="currentColor" stroke="none" />
+          <circle cx="12" cy="18" r="1.25" fill="currentColor" stroke="none" />
         </svg>
       );
     default:
